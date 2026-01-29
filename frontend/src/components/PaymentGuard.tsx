@@ -1,4 +1,5 @@
 import { Navigate } from "react-router-dom";
+import type { ReactNode } from "react";
 
 const PaymentGuard = ({ children }: { children: JSX.Element }) => {
   const user = JSON.parse(localStorage.getItem("user") || "null");
