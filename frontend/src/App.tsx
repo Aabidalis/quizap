@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import type { ReactNode } from "react";
+import type { ReactNode } from "react"; // ✅ use type-only import
+
 import Landing from "./pages/Landing";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
@@ -9,13 +10,13 @@ import Quiz from "./pages/Quiz";
 import Result from "./pages/Result";
 
 // ✅ Login protection
-const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
+const ProtectedRoute = ({ children }: { children: ReactNode }) => {
   const token = localStorage.getItem("token");
   if (!token) return <Navigate to="/login" replace />;
-  return children;
+  return <>{children}</>; // ✅ wrap in fragment
 };
 
-const PaidRoute = ({ children }: { children: JSX.Element }) => {
+const PaidRoute = ({ children }: { children: ReactNode }) => {
   const token = localStorage.getItem("token");
   const userRaw = localStorage.getItem("user");
 
@@ -28,23 +29,21 @@ const PaidRoute = ({ children }: { children: JSX.Element }) => {
     return <Navigate to="/login" replace />;
   }
 
-  if (user.paymentStatus !== "paid") {
-    return <Navigate to="/payment" replace />;
-  }
+  if (user.paymentStatus !== "paid") return <Navigate to="/payment" replace />;
 
-  return children;
+  return <>{children}</>; // ✅ wrap in fragment
 };
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* 🌍 Public */}
+        {/* Public */}
         <Route path="/" element={<Landing />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
 
-        {/* 💳 Payment */}
+        {/* Payment */}
         <Route
           path="/payment"
           element={
@@ -54,7 +53,7 @@ function App() {
           }
         />
 
-        {/* 📜 Rules (paid users only) */}
+        {/* Rules */}
         <Route
           path="/rules"
           element={
@@ -64,7 +63,7 @@ function App() {
           }
         />
 
-        {/* 🧠 Quiz (paid users only) */}
+        {/* Quiz */}
         <Route
           path="/quiz"
           element={
@@ -74,7 +73,7 @@ function App() {
           }
         />
 
-        {/* 🏆 Result (paid users only) */}
+        {/* Result */}
         <Route
           path="/result"
           element={
@@ -84,7 +83,7 @@ function App() {
           }
         />
 
-        {/* ❌ fallback */}
+        {/* Fallback */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
